@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:  # all steps will be exeucted ont he runner
         - name: Checkout code
-          uses: action/checkout@v6 
+          uses: actions/checkout@v6 
         - name: Install nodejs of version 18 and npm
           uses: actions/setup-node@v6
           with:
