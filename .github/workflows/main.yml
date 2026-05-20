@@ -1,0 +1,22 @@
+name: Build nodejs application using github actions
+on: 
+  push:  # run on every push to the master branch
+    branches:
+        - master
+  workflow_dispatch: # run manually
+jobs:
+   buildnodejs:
+    runs-on: ubuntu-latest
+    steps:  # all steps will be exeucted ont he runner
+        - name: Checkout code
+          uses: action/checkout@v6 
+        - name: Install nodejs of version 18 and npm
+          uses: actions/setup-node@v6
+          with:
+            node-version: 18
+        - name: Install dependencies using npm
+          run: npm install
+        - name: run tests using npm
+          run: npm test
+        - name: build the application using npm
+          run: npm run build
