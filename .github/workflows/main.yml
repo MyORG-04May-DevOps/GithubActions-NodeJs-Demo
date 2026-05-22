@@ -6,25 +6,22 @@ on:
   workflow_dispatch: # run manually
 jobs:
    buildnodejs:
-    runs-on: ubuntu-latest
+    continue-on-error: true 
+    strategy:
+     matrix:
+      node-version: [12, 16, 18, 20] # run the job for both nodejs versions 18 and 20
+      operating-system: [ubuntu-latest, windows-latest] # run the job on both ubuntu and windows operating systems
+    runs-on: ${{ matrix.operating-system }} # run the job on the operating system defined in the matrix
     steps:  # all steps will be exeucted ont he runner
         - name: Checkout code
           uses: actions/checkout@v6 
-        - name: Install nodejs of version 18 and npm
+        - name: Install nodejs of version ${{ matrix.node-version }} and npm
           uses: actions/setup-node@v6
           with:
-            node-version: 18
+            node-version: ${{ matrix.node-version }}
         - name: Install dependencies using npm
           run: npm install
         - name: run tests using npm
           run: npm test
         - name: build the application using npm
           run: npm run build
-        - name: Upload the artifact from runner to current github repository
-          uses: actions/upload-artifact@v7
-          with:
-            name: build-artifact
-            path: /home/runner/work/GithubActions-NodeJs-Demo/GithubActions-NodeJs-Demo/dist/index.html
-            
-    
-    
