@@ -1,40 +1,22 @@
-name: multiple runners and choose jobs
+name: Build nodejs application using github actions
 on: 
-    workflow_dispatch:
-        inputs:
-            runner:
-                description: 'Choose the runner to execute the job'
-                required: true
-                default: 'ubuntu-latest'
-                type: choice
-                options:
-                    - ubuntu-latest
-                    - windows-latest
-                    - macos-latest
-            job-name:
-                description: 'Enter the multiple job names to execute (comma-separated)'
-                required: true
-                type: string
-                
+  push:  # run on every push to the master branch
+    branches:
+        - master
+  workflow_dispatch: # run manually
 jobs:
-    build-job:
-        if: contains(github.event.inputs.job-name, 'build-job')
-        # select the runner based on the input
-        runs-on: ${{ github.event.inputs.runner }}
-        steps:
-            - name: Build step
-              run: echo "Running build job on ${{ github.event.inputs.runner }}"
-    test-job:
-        if: contains(github.event.inputs.job-name, 'test-job')
-        # select the runner based on the input
-        runs-on: ${{ github.event.inputs.runner }}
-        steps:
-            - name: Test step
-              run: echo "Running test job on ${{ github.event.inputs.runner }}"
-    deploy-job:
-        if: contains(github.event.inputs.job-name, 'deploy-job')
-        # select the runner based on the input
-        runs-on: ${{ github.event.inputs.runner }}
-        steps:
-            - name: Deploy step
-              run: echo "Running deploy job on ${{ github.event.inputs.runner }}"
+   buildnodejs:
+    runs-on: self-hosted  # we will use self hosted runner to run the job, we can also use github hosted runner by specifying the os like ubuntu-latest, windows-latest, macos-latest
+    steps:  # all steps will be exeucted ont he runner
+        - name: Checkout code
+          uses: actions/checkout@v6 
+        - name: Install nodejs of version 18 and npm
+          uses: actions/setup-node@v6
+          with:
+            node-version: 18
+        - name: Install dependencies using npm
+          run: npm install
+        - name: run tests using npm
+          run: npm test
+        - name: build the application using npm
+          run: npm run build
